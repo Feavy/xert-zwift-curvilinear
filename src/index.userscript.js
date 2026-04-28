@@ -25,10 +25,10 @@ var download = (function () {
 }());
 
 (function() {
-    const btns = document.getElementsByClassName("btns-row")[0];
-    const newButton = document.createElement("a");
-    newButton.className = "svelte-9g3kuk";
-    newButton.innerHTML = `<button class="svelte-9g3kuk"><span class="svelte-9g3kuk"><i class="fa fa-circle-arrow-down svelte-9g3kuk"></i> <p class="svelte-9g3kuk">ZWO (fix)</p></span></button>`;
+    const btns = document.querySelector(".flex.flex-row.flex-wrap.gap-2");
+    const newButton = document.createElement("button");
+    newButton.className = "focus-visible:ring-ring inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm h-8 rounded-md px-3 text-xs border-0";
+    newButton.innerHTML = `<i class="fa-regular fa-download text-xs mr-1" aria-hidden="true"></i>ZWO (fixed)`;
     btns.insertBefore(newButton, btns.childNodes[1]);
 
     newButton.addEventListener("click", downloadFixedZWO);

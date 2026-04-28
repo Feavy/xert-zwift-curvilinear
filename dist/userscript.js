@@ -10,13 +10,13 @@
 // ==/UserScript==
 
 var d = Object.defineProperty;
-var f = (a, t, s) => t in a ? d(a, t, { enumerable: !0, configurable: !0, writable: !0, value: s }) : a[t] = s;
-var u = (a, t, s) => f(a, typeof t != "symbol" ? t + "" : t, s);
-function l(a, t, s, e, n, o) {
-  return Math.abs((n - s) * (e - t) - (s - a) * (o - e)) / Math.sqrt((n - s) ** 2 + (o - e) ** 2);
+var f = (n, t, s) => t in n ? d(n, t, { enumerable: !0, configurable: !0, writable: !0, value: s }) : n[t] = s;
+var u = (n, t, s) => f(n, typeof t != "symbol" ? t + "" : t, s);
+function l(n, t, s, e, a, o) {
+  return Math.abs((a - s) * (e - t) - (s - n) * (o - e)) / Math.sqrt((a - s) ** 2 + (o - e) ** 2);
 }
-function w(a) {
-  const t = Math.floor(a / 60), s = a % 60;
+function w(n) {
+  const t = Math.floor(n / 60), s = n % 60;
   return `${t}:${s < 10 ? "0" : ""}${s}`;
 }
 const i = class i {
@@ -32,8 +32,8 @@ const i = class i {
   getFarestPoint() {
     let t = -1, s = null;
     for (const e of this.values) {
-      const n = l(e.seconds, e.watts, this.start, this.startWatts, this.start + this.duration, this.endWatts);
-      n > t && (t = n, s = e);
+      const a = l(e.seconds, e.watts, this.start, this.startWatts, this.start + this.duration, this.endWatts);
+      a > t && (t = a, s = e);
     }
     return s;
   }
@@ -66,8 +66,8 @@ const i = class i {
   toLinearIntervals() {
     const t = [];
     if (this.getMaxDistance() > i.CURVED_THRESHOLD) {
-      const s = this.getMaxSubIntervalLength(), e = this.values.slice(0, s), n = this.values.slice(s);
-      t.push(...i.fromValues(e, this.ftp).toLinearIntervals()), t.push(...i.fromValues(n, this.ftp).toLinearIntervals());
+      const s = this.getMaxSubIntervalLength(), e = this.values.slice(0, s), a = this.values.slice(s);
+      t.push(...i.fromValues(e, this.ftp).toLinearIntervals()), t.push(...i.fromValues(a, this.ftp).toLinearIntervals());
     } else
       t.push(this.toLinear());
     return t;
@@ -88,16 +88,16 @@ const i = class i {
   }
   static fromValues(t, s) {
     const e = new i(s);
-    for (const n of t)
-      e.add(n);
+    for (const a of t)
+      e.add(a);
     return e.close(), e;
   }
 };
 u(i, "CURVED_THRESHOLD", 3);
 let c = i;
 class p {
-  constructor(t, s, e = "Workout", n = "") {
-    this.data = t, this.ftp = s, this.title = e, this.description = n, this.intervals = [];
+  constructor(t, s, e = "Workout", a = "") {
+    this.data = t, this.ftp = s, this.title = e, this.description = a, this.intervals = [];
     let o = new c(s), h;
     for (const r of this.data)
       (typeof this.min > "u" || r.watts < this.min) && (this.min = r.watts), (typeof this.max > "u" || r.watts > this.max) && (this.max = r.watts), typeof h < "u" && Math.abs(r.watts - h.watts) > 10 && (o.close(), this.intervals.push(o), o = new c(s)), o.add(r), h = r;
@@ -118,11 +118,11 @@ class p {
   }
 }
 async function m() {
-  const a = document.getElementsByName("_token")[0].value, t = await fetch("/my-fitness", {
+  const n = document.getElementsByName("_token")[0].value, t = await fetch("/my-fitness", {
     credentials: "same-origin",
     cache: "no-store",
     headers: {
-      "X-CSRF-TOKEN": a,
+      "X-CSRF-TOKEN": n,
       "X-Requested-With": "XMLHttpRequest",
       "Content-Type": "application/json"
     }
@@ -131,8 +131,8 @@ async function m() {
 `)[0]).signature.ftp.toFixed(0);
 }
 async function v() {
-  const a = window.location.href.split("/workout/")[1].split("/")[0], t = document.getElementsByName("_token")[0].value;
-  return await fetch(`/workout/${a}/data`, {
+  const n = window.location.href.split("/workout/")[1].split("/")[0], t = document.getElementsByName("_token")[0].value;
+  return await fetch(`/workout/${n}/data`, {
     credentials: "same-origin",
     cache: "no-store",
     headers: {
@@ -143,17 +143,17 @@ async function v() {
   }).then((e) => e.json());
 }
 async function g() {
-  const a = await v(), t = await m(), s = WorkoutDetails.$$.ctx[4].name, e = WorkoutDetails.$$.ctx[4].description, n = new p(a.data, t, s, e);
-  W(n.toZwo(), `${s}.zwo`);
+  const n = await v(), t = await m(), s = WorkoutDetails.$$.ctx[4].name, e = WorkoutDetails.$$.ctx[4].description, a = new p(n.data, t, s, e);
+  W(a.toZwo(), `${s}.zwo`);
 }
 var W = function() {
-  var a = document.createElement("a");
-  return document.body.appendChild(a), a.style = "display: none", function(t, s) {
-    var e = new Blob([t], { type: "octet/stream" }), n = window.URL.createObjectURL(e);
-    a.href = n, a.download = s, a.click(), window.URL.revokeObjectURL(n);
+  var n = document.createElement("a");
+  return document.body.appendChild(n), n.style = "display: none", function(t, s) {
+    var e = new Blob([t], { type: "octet/stream" }), a = window.URL.createObjectURL(e);
+    n.href = a, n.download = s, n.click(), window.URL.revokeObjectURL(a);
   };
 }();
 (function() {
-  const a = document.getElementsByClassName("btns-row")[0], t = document.createElement("a");
-  t.className = "svelte-9g3kuk", t.innerHTML = '<button class="svelte-9g3kuk"><span class="svelte-9g3kuk"><i class="fa fa-circle-arrow-down svelte-9g3kuk"></i> <p class="svelte-9g3kuk">ZWO (fix)</p></span></button>', a.insertBefore(t, a.childNodes[1]), t.addEventListener("click", g);
+  const n = document.querySelector(".flex.flex-row.flex-wrap.gap-2"), t = document.createElement("button");
+  t.className = "focus-visible:ring-ring inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm h-8 rounded-md px-3 text-xs border-0", t.innerHTML = '<i class="fa-regular fa-download text-xs mr-1" aria-hidden="true"></i>ZWO (fixed)', n.insertBefore(t, n.childNodes[1]), t.addEventListener("click", g);
 })();
