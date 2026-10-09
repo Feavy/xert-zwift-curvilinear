@@ -78,13 +78,13 @@ export default class Interval {
             return Interval.fromValues(this.values.map(value => ({
                 seconds: value.seconds,
                 watts: avg,
-            })));
+            })), this.ftp);
         } else {
             const coef = (this.endWatts - this.startWatts) / this.duration;
             return Interval.fromValues(this.values.map((value, index) => ({
                 seconds: value.seconds,
                 watts: this.startWatts + coef * index,
-            })));
+            })), this.ftp);
         }
     }
 
@@ -103,14 +103,14 @@ export default class Interval {
         return intervals;
     }
 
-    toZwo(ftp) {
+    toZwo() {
         switch(this.type) {
             case "flat":
-                return `<SteadyState Duration="${this.duration}" Power="${this.startWatts / ftp}" />`;
+                return `<SteadyState Duration="${this.duration}" Power="${this.startWatts / this.ftp}" />`;
             case "linear":
-                return `<Ramp Duration="${this.duration}" PowerLow="${this.startWatts / ftp}" PowerHigh="${this.endWatts / ftp}" />`;
+                return `<Ramp Duration="${this.duration}" PowerLow="${this.startWatts / this.ftp}" PowerHigh="${this.endWatts / this.ftp}" />`;
             case "curved": {
-                return this.toLinearIntervals().map(interval => interval.toZwo(ftp)).join("\n");
+                return this.toLinearIntervals().map(interval => interval.toZwo()).join("\n");
             }
         }
     }
